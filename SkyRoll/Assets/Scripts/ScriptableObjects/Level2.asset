@@ -16,5 +16,6 @@ MonoBehaviour:
   levelNo: 2
   levelID: 1
   levelLenth: 55
-  isCompleted: 0
+  isCompleted: 1
   hasAchievement: 0
+  gemCount: 30

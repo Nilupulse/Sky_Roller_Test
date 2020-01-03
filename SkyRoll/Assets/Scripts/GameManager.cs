@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public bool canPlay;
     public bool standby;
     public bool isFirstTime;
-    public int playerScore;
+    public int playerGemCount;
     public int progressNo;
     public float boostTime;
     public List<LevelData> levelData = new List<LevelData>();
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         canPlay = false;
-        playerScore = 0;
+       // playerScore = 0;
         progressNo = 0;
         boostTime = 3f;
         SetCurrentLevel();
@@ -47,19 +47,28 @@ public class GameManager : MonoBehaviour
     }
     public void SetCurrentLevel() 
     {
-        print("progressNo1"+ progressNo);
-        if (isFirstTime)
+        if (progressNo <= 2)
         {
-            currentLevelData = levelData[progressNo];
-            currentLevel= Instantiate(levels[progressNo]) as GameObject;
+            print("progressNo1" + progressNo);
+            if (isFirstTime)
+            {
+                currentLevelData = levelData[progressNo];
+                currentLevel = Instantiate(levels[progressNo]) as GameObject;
+            }
+            else
+            {
+                currentLevelData = null;
+                Destroy(currentLevel);
+                currentLevelData = levelData[progressNo];
+                currentLevel = Instantiate(levels[progressNo]) as GameObject;
+            }
+            UIHandler.Instance.SetGameInfo(currentLevelData);
         }
         else
         {
-            currentLevelData = null;
-            Destroy(currentLevel);
-            currentLevelData = levelData[progressNo];
-            currentLevel = Instantiate(levels[progressNo]) as GameObject;
+            UIHandler.Instance.DemoComplete();
         }
+        
     }
     public void GameOver()
     {
@@ -68,16 +77,17 @@ public class GameManager : MonoBehaviour
     }
     public void LevelCompleted() 
     {
+
         progressNo++;
         gameStatus = GameStatus.WIN;
         PlayerMovements.Instance.SlowDownPlayer();
         currentLevelData.isCompleted = true;
-        UIHandler.Instance.GameWin(currentLevelData.levelName);
-        UIHandler.Instance.ActivateCompletedLevel(currentLevelData.levelID);
+        UIHandler.Instance.GameWin();
+        UIHandler.Instance.ActivateCompletedLevel();
         if (currentLevelData.levelID == 4)
         {
             UIHandler.Instance.ResetActivateCompletedLevel();
-        }
+        }        
 
     }
     public void SetHitObject(GameObject _hitObject) 

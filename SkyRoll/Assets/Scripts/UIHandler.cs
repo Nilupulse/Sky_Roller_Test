@@ -11,12 +11,25 @@ public class UIHandler : MonoBehaviour
     public GameObject GamePlayScreen;
     public GameObject GameWinScreen;
     public GameObject GameOverScreen;
+    public GameObject DemoCompleteScreen;
     public GameObject Confetti;
     public Image[] completedLevels = new Image[4];
-    public Text playerScoreText;
+    public Text levelNameText;
+    public Text gemCountText;
     public Animator camAnim;
     public GameObject camera;
+
+    public Image progressBar;
+    public float chanceTime;
+    public GameObject btnNoThanks;
+
+    int levelID;
+    int levelLenth;
+    int levelGemCount;
+    string levelName;
+
     public Slider gameProgress;
+    bool secondChance;
     Vector3 camPos;
 
     public static UIHandler Instance;
@@ -34,7 +47,6 @@ public class UIHandler : MonoBehaviour
         camPos = camera.transform.position;
         ResetActivateCompletedLevel();        
         StartCoroutine(ActivateUI());
-        SetGameProgress();
     }
     IEnumerator ActivateUI() 
     {
@@ -66,18 +78,26 @@ public class UIHandler : MonoBehaviour
     public void Revive()
     {
         GameManager.Instance.gameStatus = GameManager.GameStatus.REVIVE;
+        ResetCircleProgressBar();
         GameManager.Instance.ReviveGame();
         DissableScreens();
-        StartScreen.SetActive(true);
+        ActivateStartScreen();
     }
     public void GameOver()
     {
         GameManager.Instance.gameStatus = GameManager.GameStatus.GAMEOVER;
         DissableScreens();
-        StartScreen.SetActive(true);
+        ResetCircleProgressBar();
+        ActivateStartScreen();
         GameManager.Instance.LoadLevel();
     }
-    public void ActivateCompletedLevel(int levelID) 
+    void ResetCircleProgressBar() 
+    {
+        secondChance = false;
+        progressBar.fillAmount = 0;
+        btnNoThanks.SetActive(false);
+    }
+    public void ActivateCompletedLevel() 
     {
         completedLevels[levelID].enabled = true;
     }
@@ -96,18 +116,20 @@ public class UIHandler : MonoBehaviour
         GamePlayScreen.SetActive(false);
         StartScreen.SetActive(false);
         GameWinScreen.SetActive(false);
+        DemoCompleteScreen.SetActive(false);
     }
-    public void GameWin(string levelName) 
+    public void GameWin() 
     {
         DissableScreens();
         GameWinScreen.transform.GetChild(1).GetComponent<Text>().text = levelName;
         GameWinScreen.SetActive(true);
         PlayCamAnimation();
+        GameManager.Instance.playerGemCount += levelGemCount;
     }
     public void Nothanks() 
     {
         DissableScreens();
-        StartScreen.SetActive(true);
+        ActivateStartScreen();
         Confetti.SetActive(false);
         camAnim.SetBool("CamAnim", false);
         GameManager.Instance.LoadLevel();
@@ -117,23 +139,51 @@ public class UIHandler : MonoBehaviour
         camAnim.SetBool("CamAnim",true);
         Confetti.SetActive(true);
     }
-    public void SetGameProgress() 
+    void ActivateStartScreen() 
     {
-        gameProgress.minValue = 0;
-        gameProgress.maxValue = 49;
+        StartScreen.SetActive(true);
+        gemCountText.text = ""+GameManager.Instance.playerGemCount;
+    }
+    public void SetGameInfo(LevelData currentLevelData) 
+    {
+        levelID = 0;
+        levelLenth = 0;
+        levelGemCount = 0;
+        levelName ="";
 
+        levelID = currentLevelData.levelID;
+        levelLenth= currentLevelData.levelLenth;
+        levelGemCount= currentLevelData.gemCount;
+        levelName = currentLevelData.levelName;
+
+        gameProgress.minValue = 0;
+        gameProgress.maxValue = levelLenth;
+        levelNameText.text = "";
+        levelNameText.text = levelName;
+
+    }
+    public void DemoComplete()
+    {
+        DissableScreens();
+        DemoCompleteScreen.SetActive(true);
     }
     // Update is called once per frame
     void Update()
     {
-        playerScoreText.text = ""+GameManager.Instance.playerScore;
         if (GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING) 
         {
             DissableScreens();
             GamePlayScreen.SetActive(true);
-            print("X" + PlayerMovements.Instance.player.transform.position.z);
             gameProgress.value =PlayerMovements.Instance.player.transform.position.z;
-            print("gameProgress.value" + gameProgress.value);
+            //print("gameProgress.value" + gameProgress.value);
+        }
+        if (secondChance) 
+        {
+            progressBar.fillAmount += 1f / 10f * Time.deltaTime;
+            if (progressBar.fillAmount == 1)
+            {
+                btnNoThanks.SetActive(true);
+            }
         }
     }
 }

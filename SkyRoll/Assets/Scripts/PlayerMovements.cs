@@ -17,6 +17,8 @@ public class PlayerMovements : MonoBehaviour
     Vector3 playerLeftPos;
     Vector3 playerRightPos;
 
+    public test TestClass;
+
     public static PlayerMovements Instance;
 
     public Text Test;
@@ -37,22 +39,18 @@ public class PlayerMovements : MonoBehaviour
     }
 
     void FixedUpdate()
-    {
+    {     
+
         if (GameManager.Instance.canPlay)
         {
             player.transform.Translate(0, 0, playerSpeed * Time.deltaTime);
         }
 
-        //if (Input.touchCount>0) 
-        //{
-        //    Touch touch = Input.GetTouch(0);
-        //    Test.text = ""+touch.deltaPosition;
-        //}
-
-
-
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if(TestClass.moveLeft)
+        //if (Input.GetKey(KeyCode.LeftArrow))
         {
+            //Test.text += "SwipeLeft" + swipeController.SwipeLeft;
+            //Test.text += "SwipeRight" + swipeController.SwipeRight;
             if (GameManager.Instance.gameStatus == GameManager.GameStatus.STANDBY || GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING)
             {
                
@@ -66,8 +64,11 @@ public class PlayerMovements : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (TestClass.moveRight)
+        //if (Input.GetKey(KeyCode.RightArrow))
         {
+            //Test.text += "SwipeLeft" + swipeController.SwipeLeft;
+            //Test.text += "SwipeRight" + swipeController.SwipeRight;
             if (GameManager.Instance.gameStatus == GameManager.GameStatus.STANDBY || GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING)
             {
                 GameManager.Instance.canPlay = true;

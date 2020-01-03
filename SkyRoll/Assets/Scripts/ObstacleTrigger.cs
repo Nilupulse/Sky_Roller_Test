@@ -15,7 +15,7 @@ public class ObstacleTrigger : MonoBehaviour
             {
                 obstacle.SetActive(true);
             }            
-            GameManager.Instance.playerScore++;
+           // GameManager.Instance.playerScore++;
         }        
     }
 }

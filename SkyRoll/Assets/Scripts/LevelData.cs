@@ -10,5 +10,6 @@ public class LevelData : ScriptableObject
     public int levelID;
     public int levelLenth;
     public bool isCompleted;
-    public bool hasAchievement; 
+    public bool hasAchievement;
+    public int gemCount;
 }
