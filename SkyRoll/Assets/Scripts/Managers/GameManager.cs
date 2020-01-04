@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        PlayerPrefs.DeleteAll();
+       //PlayerPrefs.DeleteAll();
         Initialize();
     }
     void Initialize() 
@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
         gameStatus = GameStatus.WIN;
         PlayerMovements.Instance.SlowDownPlayer();
         currentLevelData.isCompleted = true;
-        UIHandler.Instance.GameWin();
+        UIHandler.Instance.PlayCamAnimation();
         UIHandler.Instance.ActivateCompletedLevel();
         if (currentLevelData.levelID == 4)
         {
@@ -122,6 +122,7 @@ public class GameManager : MonoBehaviour
     }
     public void ResetGame() //to reset the game after the demo
     {
+        float tempPlayerSpeed= DataHandler.Instance.GetFloatData("PlayerSpeed");
         PlayerPrefs.DeleteAll();
         if (currentLevel != null)
         {
@@ -131,6 +132,7 @@ public class GameManager : MonoBehaviour
         {
             obj.isCompleted = false;
         }
+        DataHandler.Instance.SaveData("PlayerSpeed", tempPlayerSpeed);
         Initialize();
     }
 }

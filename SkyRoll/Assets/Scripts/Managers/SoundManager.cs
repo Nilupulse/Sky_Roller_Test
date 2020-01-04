@@ -13,6 +13,7 @@ public class SoundManager : MonoBehaviour
     public List<AudioClip> audioClips=new List<AudioClip>();
 
     public bool isSoundOn;
+    bool isPlaying;
     void Awake()
     {
         if (!Instance)
@@ -23,6 +24,7 @@ public class SoundManager : MonoBehaviour
     void Start() 
     {
         isSoundOn = DataHandler.Instance.GetPlayerStatus("IsSoundOn");//check sound status
+        isPlaying = false;
     }
     public void SoundOption() 
     {
@@ -43,10 +45,15 @@ public class SoundManager : MonoBehaviour
     {
         if (isSoundOn)
         {
-            backgroudMusic.Play();            
+            if (!isPlaying) 
+            {
+                isPlaying = true;
+                backgroudMusic.Play();            
+            }
         }
         else
         {
+            isPlaying = false;
             backgroudMusic.Stop();
         }
     }

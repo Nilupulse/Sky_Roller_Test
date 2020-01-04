@@ -34,16 +34,19 @@ public class PlayerMovements : MonoBehaviour
     {
         boostMode = false;
         playerCurrentSpeed = playerSpeed;
+        print("playerSpeed Start " + playerSpeed);
+        DataHandler.Instance.SaveData("PlayerSpeed", playerCurrentSpeed);
         playerPos = player.transform.position;
         playerLeftPos=playerLeft.transform.position;
         playerRightPos= playerRight.transform.position;
     }
 
     void FixedUpdate()
-    {     
-
+    {
+        //print("canPlay"+ GameManager.Instance.canPlay);
         if (GameManager.Instance.canPlay)//player movement
         {
+            //print("A");
             player.transform.Translate(0, 0, playerSpeed * Time.deltaTime);
         }
         //user Input handlling
@@ -97,24 +100,28 @@ public class PlayerMovements : MonoBehaviour
         player.transform.position= playerPos;
         playerLeft.transform.position= playerLeftPos;
         playerRight.transform.position= playerRightPos;
-        playerSpeed = playerCurrentSpeed;
+        playerSpeed = DataHandler.Instance.GetFloatData("PlayerSpeed");
+        print("playerSpeed"+ DataHandler.Instance.GetFloatData("PlayerSpeed"));
     }
     public void SlowDownPlayer() 
     {
         
         if (playerSpeed > 0)
         {
+            print("Breaking...");
             if (boostMode)
             {
                 playerSpeed = playerCurrentSpeed;
             }
-            playerSpeed -= .3f;
+            playerSpeed -= .6f;
             Invoke("SlowDownPlayer", .1f);
         }
         else 
         {
+            print("Stoped...");
             playerSpeed = 0;
-            GameManager.Instance.canPlay = false;            
+            GameManager.Instance.canPlay = false;
+            UIHandler.Instance.GameWin();
         }
         
     }

@@ -13,7 +13,10 @@ public class DataHandler : MonoBehaviour
             Instance = this;
         }
     }
-
+    public void SaveData(string key, float value)
+    {
+        PlayerPrefs.SetFloat(key, value);
+    }
     public void SaveData(string key, string value) 
     {
         PlayerPrefs.SetString(key,value);
@@ -34,6 +37,10 @@ public class DataHandler : MonoBehaviour
             _value = 0;//
         }
         SaveData(key, _value);
+    }
+    public float GetFloatData(string key)
+    {
+        return PlayerPrefs.GetFloat(key);
     }
     public string GetStringData(string key)
     {

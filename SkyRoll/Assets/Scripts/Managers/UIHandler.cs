@@ -25,6 +25,7 @@ public class UIHandler : MonoBehaviour
 
     public Text levelNameText;
     public Text gemCountText;
+    public Text levelLoadingText;
 
     public Animator camAnim;
     public GameObject camera;
@@ -33,6 +34,7 @@ public class UIHandler : MonoBehaviour
 
     public float chanceTime;
     bool secondChance;
+    bool demoAgain;
 
     int levelID;
     int levelLenth;
@@ -55,6 +57,7 @@ public class UIHandler : MonoBehaviour
         camPos = camera.transform.position;
         ResetActivateCompletedLevel();        
         StartCoroutine(ActivateUI());
+        demoAgain = true;
     }
     IEnumerator ActivateUI() 
     {
@@ -119,6 +122,7 @@ public class UIHandler : MonoBehaviour
     {
         DissableScreens();
         GameOverScreen.SetActive(true);
+        secondChance = true;
     }
     public void Revive()
     {
@@ -147,10 +151,10 @@ public class UIHandler : MonoBehaviour
     #region Game Win
     public void GameWin()
     {
+        Confetti.SetActive(true);
         DissableScreens();
         GameWinScreen.transform.GetChild(1).GetComponent<Text>().text = levelName;
         GameWinScreen.SetActive(true);
-        PlayCamAnimation();
 
     }
     public void ClaimDoubleGems()//inside this can play ads
@@ -173,10 +177,10 @@ public class UIHandler : MonoBehaviour
         camAnim.SetBool("CamAnim", false);
         GameManager.Instance.LoadLevel();
     }
-    void PlayCamAnimation()
+    public void PlayCamAnimation()
     {
         camAnim.SetBool("CamAnim", true);
-        Confetti.SetActive(true);
+        
     }
     public void ActivateCompletedLevel()
     {
@@ -199,8 +203,13 @@ public class UIHandler : MonoBehaviour
     }
     public void PlayDemoAgain()
     {
-        ResetActivateCompletedLevel();
-        GameManager.Instance.ResetGame();
+        if (demoAgain) 
+        {
+            demoAgain = false;
+            levelLoadingText.enabled = true;
+            ResetActivateCompletedLevel();
+            GameManager.Instance.ResetGame();
+        }  
 
     }
     #endregion
@@ -233,6 +242,7 @@ public class UIHandler : MonoBehaviour
 
     void DissableScreens() 
     {
+        levelLoadingText.enabled = false;
         SplashScreen.SetActive(false);
         InfoScreen.SetActive(false);
         GameOverScreen.SetActive(false);
