@@ -18,6 +18,8 @@ public class UIHandler : MonoBehaviour
     public GameObject DemoCompleteScreen;
 
     public GameObject Confetti;
+    public GameObject leftTrail;
+    public GameObject rightTrail;
     public GameObject btnNoThanks;
 
     public Image[] completedLevels = new Image[4];
@@ -254,11 +256,18 @@ public class UIHandler : MonoBehaviour
     } 
     void Update()
     {
-        if (GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING) 
+        if (GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING)
         {
             DissableScreens();
             GamePlayScreen.SetActive(true);
-            gameProgress.value =PlayerMovements.Instance.player.transform.position.z;
+            gameProgress.value = PlayerMovements.Instance.player.transform.position.z;
+            leftTrail.SetActive(true);
+            rightTrail.SetActive(true);
+        }
+        else 
+        {
+            leftTrail.SetActive(false);
+            rightTrail.SetActive(false);
         }
         if (secondChance) 
         {

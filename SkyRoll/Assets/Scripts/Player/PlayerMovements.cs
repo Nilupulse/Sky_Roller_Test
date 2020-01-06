@@ -7,7 +7,7 @@ public class PlayerMovements : MonoBehaviour
 {
     //Singleton class
     public static PlayerMovements Instance;
-    
+
     public GameObject playerLeft;
     public GameObject playerRight;
     public GameObject player;
@@ -23,22 +23,22 @@ public class PlayerMovements : MonoBehaviour
     public Swipe swipeClass;
     public Text Test;
 
-    void Awake() 
+    void Awake()
     {
-        if (!Instance) 
+        if (!Instance)
         {
             Instance = this;
         }
     }
-    void Start() 
+    void Start()
     {
         boostMode = false;
         playerCurrentSpeed = playerSpeed;
         print("playerSpeed Start " + playerSpeed);
         DataHandler.Instance.SaveData("PlayerSpeed", playerCurrentSpeed);
         playerPos = player.transform.position;
-        playerLeftPos=playerLeft.transform.position;
-        playerRightPos= playerRight.transform.position;
+        playerLeftPos = playerLeft.transform.position;
+        playerRightPos = playerRight.transform.position;
     }
 
     void FixedUpdate()
@@ -50,8 +50,7 @@ public class PlayerMovements : MonoBehaviour
             player.transform.Translate(0, 0, playerSpeed * Time.deltaTime);
         }
         //user Input handlling
-        if(swipeClass.moveLeft)
-        //if (Input.GetKey(KeyCode.LeftArrow))
+        if (swipeClass.moveLeft || Input.GetKey(KeyCode.LeftArrow))
         {
             if (GameManager.Instance.gameStatus == GameManager.GameStatus.STANDBY || GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING)
             {               
@@ -65,8 +64,7 @@ public class PlayerMovements : MonoBehaviour
                 }
             }
         }
-        if (swipeClass.moveRight)
-        //if (Input.GetKey(KeyCode.RightArrow))
+        if (swipeClass.moveRight || Input.GetKey(KeyCode.RightArrow))
         {
             if (GameManager.Instance.gameStatus == GameManager.GameStatus.STANDBY || GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING)
             {
