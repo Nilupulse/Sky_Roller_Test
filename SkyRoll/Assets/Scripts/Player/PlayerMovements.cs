@@ -11,10 +11,16 @@ public class PlayerMovements : MonoBehaviour
     public GameObject playerLeft;
     public GameObject playerRight;
     public GameObject player;
+    public GameObject playerLeftLeg;
+    public GameObject playerRightLeg;
+    public GameObject playerBody;
+    public GameObject leftTail;
+    public GameObject rightTail;
     public float playerSpeed;
     public float playerMoveSpeed;
     float playerCurrentSpeed;
     bool boostMode;
+    bool powerUpMode;
 
     Vector3 playerPos;
     Vector3 playerLeftPos;
@@ -56,11 +62,17 @@ public class PlayerMovements : MonoBehaviour
             {               
                 GameManager.Instance.canPlay = true;
                 GameManager.Instance.gameStatus = GameManager.GameStatus.PLAYING;
-
+                print("playerLeftLeg.transform.rotation"+ playerLeftLeg.transform.rotation);
+                print("playerRightLeg.transform.rotationn" + playerRightLeg.transform.rotation);
                 if (playerLeft.transform.position.x < -.3f)
                 {
                     playerLeft.transform.Translate(playerMoveSpeed * Time.deltaTime, 0, 0);
                     playerRight.transform.Translate(-playerMoveSpeed * Time.deltaTime, 0, 0);
+
+                    playerLeftLeg.transform.Rotate(new Vector3(0, 0, 1), -150 * Time.deltaTime);
+                    playerRightLeg.transform.Rotate(new Vector3(0, 0, 1), 150 * Time.deltaTime);
+
+                    playerBody.transform.localPosition = new Vector3(0, 1f * Time.deltaTime, 0);
                 }
             }
         }
@@ -70,15 +82,28 @@ public class PlayerMovements : MonoBehaviour
             {
                 GameManager.Instance.canPlay = true;
                 GameManager.Instance.gameStatus = GameManager.GameStatus.PLAYING;
-
+                //Down
                 if (playerLeft.transform.position.x > -1f)
                 {
                     playerLeft.transform.Translate(-playerMoveSpeed * Time.deltaTime, 0, 0);
                     playerRight.transform.Translate(playerMoveSpeed * Time.deltaTime, 0, 0);
+
+                    playerLeftLeg.transform.Rotate(new Vector3(0, 0, 1), 150 * Time.deltaTime);
+                    playerRightLeg.transform.Rotate(new Vector3(0, 0, 1), -150 * Time.deltaTime);
+
+                    playerBody.transform.localPosition = new Vector3(0,-12f*Time.deltaTime,0);                    
                 }
+
             }
         }
-    }    
+    }
+    public void PropellerHat() //boost player
+    {
+        powerUpMode = true;
+        leftTail.SetActive(false);
+        rightTail.SetActive(false);
+        player.transform.position = new Vector3(player.transform.position.x, .29f, player.transform.position.z);
+    }
     public void BoostSpeed() //boost player
     {
         boostMode = true;
@@ -103,7 +128,10 @@ public class PlayerMovements : MonoBehaviour
     }
     public void SlowDownPlayer() 
     {
-        
+        if (powerUpMode)
+        {
+            player.transform.position = new Vector3(player.transform.position.x, 0f, player.transform.position.z);
+        }
         if (playerSpeed > 0)
         {
             print("Breaking...");
@@ -118,6 +146,7 @@ public class PlayerMovements : MonoBehaviour
         {
             print("Stoped...");
             playerSpeed = 0;
+            powerUpMode = false;
             GameManager.Instance.canPlay = false;
             UIHandler.Instance.GameWin();
         }

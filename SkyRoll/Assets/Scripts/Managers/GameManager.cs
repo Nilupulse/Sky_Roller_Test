@@ -82,7 +82,21 @@ public class GameManager : MonoBehaviour
             UIHandler.Instance.DemoComplete();
         }
         
-    }   
+    }
+    public IEnumerator HatPowerUp() 
+    {
+        canPlay = false;
+        AnimationManager.Instance.PlayCamAnimation();
+        yield return new WaitForSeconds(3f);
+        AnimationManager.Instance.HatPowerUp();
+        yield return new WaitForSeconds(3f);
+        AnimationManager.Instance.ActivateWinCharacterAnimation(false);
+        yield return new WaitForSeconds(3f);
+        AnimationManager.Instance.ResetCamAnimation();
+        PlayerMovements.Instance.PropellerHat();
+        yield return new WaitForSeconds(2f);
+        canPlay = true;
+    }
     public void LevelCompleted() //when level completed
     {
 
@@ -91,7 +105,8 @@ public class GameManager : MonoBehaviour
         gameStatus = GameStatus.WIN;
         PlayerMovements.Instance.SlowDownPlayer();
         currentLevelData.isCompleted = true;
-        UIHandler.Instance.PlayCamAnimation();
+        AnimationManager.Instance.PlayCamAnimation();
+        AnimationManager.Instance.ActivateWinCharacterAnimation(true);
         UIHandler.Instance.ActivateCompletedLevel();
         if (currentLevelData.levelID == 4)
         {
@@ -117,6 +132,7 @@ public class GameManager : MonoBehaviour
     public void LoadLevel() //load level(same or next)
     {
         PlayerMovements.Instance.ResetPlayer();
+        AnimationManager.Instance.ResetCharacter();
         SetCurrentLevel();
         gameStatus = GameStatus.STANDBY;
     }

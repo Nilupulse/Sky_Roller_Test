@@ -176,13 +176,8 @@ public class UIHandler : MonoBehaviour
         DissableScreens();
         ActivateStartScreen();
         Confetti.SetActive(false);
-        camAnim.SetBool("CamAnim", false);
+        AnimationManager.Instance.ResetCamAnimation();
         GameManager.Instance.LoadLevel();
-    }
-    public void PlayCamAnimation()
-    {
-        camAnim.SetBool("CamAnim", true);
-        
     }
     public void ActivateCompletedLevel()
     {
