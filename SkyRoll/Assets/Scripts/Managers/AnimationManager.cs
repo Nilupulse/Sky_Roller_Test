@@ -41,12 +41,14 @@ public class AnimationManager : MonoBehaviour
     }
     public void HatPowerUp() 
     {
+        caracterAnim.SetInteger("CharacterAnim",1);
         hat.SetActive(false);
         propellerHat.SetActive(true);
-        caracterAnim.SetInteger("CharacterAnim",1);
     }
     public void ResetCharacter() 
     {
+        propellerHat.SetActive(false);
+        hat.SetActive(true);
         animatedCharacterModel.SetActive(false);
         characterModel.SetActive(true);
     }

@@ -20,11 +20,15 @@ public class PlayerMovements : MonoBehaviour
     public float playerMoveSpeed;
     float playerCurrentSpeed;
     bool boostMode;
-    bool powerUpMode;
+    public bool powerUpMode;
 
     Vector3 playerPos;
     Vector3 playerLeftPos;
     Vector3 playerRightPos;
+
+    Vector3 playerModelPos;
+    Quaternion playerModelLeftRot;
+    Quaternion playerModelRightRot;
 
     public Swipe swipeClass;
     public Text Test;
@@ -40,16 +44,20 @@ public class PlayerMovements : MonoBehaviour
     {
         boostMode = false;
         playerCurrentSpeed = playerSpeed;
-        print("playerSpeed Start " + playerSpeed);
+        //print("playerSpeed Start " + playerSpeed);
         DataHandler.Instance.SaveData("PlayerSpeed", playerCurrentSpeed);
         playerPos = player.transform.position;
         playerLeftPos = playerLeft.transform.position;
         playerRightPos = playerRight.transform.position;
+
+        playerModelPos = playerBody.transform.position;
+        playerModelLeftRot = playerLeftLeg.transform.localRotation;
+        playerModelRightRot = playerRightLeg.transform.localRotation;
     }
 
     void FixedUpdate()
     {
-        //print("canPlay"+ GameManager.Instance.canPlay);
+        
         if (GameManager.Instance.canPlay)//player movement
         {
             //print("A");
@@ -59,11 +67,12 @@ public class PlayerMovements : MonoBehaviour
         if (swipeClass.moveLeft || Input.GetKey(KeyCode.LeftArrow))
         {
             if (GameManager.Instance.gameStatus == GameManager.GameStatus.STANDBY || GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING)
-            {               
-                GameManager.Instance.canPlay = true;
+            {
+                if (!powerUpMode) 
+                {
+                    GameManager.Instance.canPlay = true;
+                }
                 GameManager.Instance.gameStatus = GameManager.GameStatus.PLAYING;
-                print("playerLeftLeg.transform.rotation"+ playerLeftLeg.transform.rotation);
-                print("playerRightLeg.transform.rotationn" + playerRightLeg.transform.rotation);
                 if (playerLeft.transform.position.x < -.3f)
                 {
                     playerLeft.transform.Translate(playerMoveSpeed * Time.deltaTime, 0, 0);
@@ -80,7 +89,10 @@ public class PlayerMovements : MonoBehaviour
         {
             if (GameManager.Instance.gameStatus == GameManager.GameStatus.STANDBY || GameManager.Instance.gameStatus == GameManager.GameStatus.PLAYING)
             {
-                GameManager.Instance.canPlay = true;
+                if (!powerUpMode)
+                {
+                    GameManager.Instance.canPlay = true;
+                }
                 GameManager.Instance.gameStatus = GameManager.GameStatus.PLAYING;
                 //Down
                 if (playerLeft.transform.position.x > -1f)
@@ -97,7 +109,7 @@ public class PlayerMovements : MonoBehaviour
             }
         }
     }
-    public void PropellerHat() //boost player
+    public void PropellerHat()
     {
         powerUpMode = true;
         leftTail.SetActive(false);
@@ -123,8 +135,13 @@ public class PlayerMovements : MonoBehaviour
         player.transform.position= playerPos;
         playerLeft.transform.position= playerLeftPos;
         playerRight.transform.position= playerRightPos;
+
+        playerBody.transform.position= playerModelPos;
+        playerLeftLeg.transform.localRotation= playerModelLeftRot;
+        playerRightLeg.transform.localRotation= playerModelRightRot;
+
         playerSpeed = DataHandler.Instance.GetFloatData("PlayerSpeed");
-        print("playerSpeed"+ DataHandler.Instance.GetFloatData("PlayerSpeed"));
+        //print("playerSpeed"+ DataHandler.Instance.GetFloatData("PlayerSpeed"));
     }
     public void SlowDownPlayer() 
     {
@@ -134,7 +151,7 @@ public class PlayerMovements : MonoBehaviour
         }
         if (playerSpeed > 0)
         {
-            print("Breaking...");
+            //print("Breaking...");
             if (boostMode)
             {
                 playerSpeed = playerCurrentSpeed;
@@ -144,7 +161,7 @@ public class PlayerMovements : MonoBehaviour
         }
         else 
         {
-            print("Stoped...");
+            //print("Stoped...");
             playerSpeed = 0;
             powerUpMode = false;
             GameManager.Instance.canPlay = false;

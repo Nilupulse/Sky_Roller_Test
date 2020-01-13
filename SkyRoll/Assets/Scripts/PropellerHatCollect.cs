@@ -9,8 +9,9 @@ public class PropellerHatCollect : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            Destroy(this.gameObject);
+            print("Hat power uo collected");
             GameManager.Instance.StartCoroutine("HatPowerUp");
+            Destroy(this.gameObject);
         }
     }
 }

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public bool canPlay;
     public bool standby;
     public bool isFirstTime;
+    public bool ClearData;
     public int progressNo;
     public int playerGemCount;
     public float boostTime;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     //Game status 
     public enum GameStatus 
     {
+        STARTED,
         STANDBY,
         PLAYING,
         REVIVE,
@@ -40,7 +42,10 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-       //PlayerPrefs.DeleteAll();
+        if (ClearData) 
+        {
+            PlayerPrefs.DeleteAll();
+        }
         Initialize();
     }
     void Initialize() 
@@ -66,6 +71,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                gameStatus = GameStatus.STANDBY;
                 currentLevelData = null;
                 if (currentLevel !=null) //when close and open the game check current level
                 {
@@ -76,16 +82,21 @@ public class GameManager : MonoBehaviour
                 
             }
             UIHandler.Instance.SetGameInfo(currentLevelData);
+            
         }
         else//only for the demo
         {
+            progressNo = 0;
+            gameStatus= GameStatus.STARTED;
             UIHandler.Instance.DemoComplete();
         }
         
     }
+    
     public IEnumerator HatPowerUp() 
     {
         canPlay = false;
+        PlayerMovements.Instance.powerUpMode = true;
         AnimationManager.Instance.PlayCamAnimation();
         yield return new WaitForSeconds(3f);
         AnimationManager.Instance.HatPowerUp();
@@ -134,7 +145,6 @@ public class GameManager : MonoBehaviour
         PlayerMovements.Instance.ResetPlayer();
         AnimationManager.Instance.ResetCharacter();
         SetCurrentLevel();
-        gameStatus = GameStatus.STANDBY;
     }
     public void ResetGame() //to reset the game after the demo
     {
@@ -151,4 +161,5 @@ public class GameManager : MonoBehaviour
         DataHandler.Instance.SaveData("PlayerSpeed", tempPlayerSpeed);
         Initialize();
     }
+
 }

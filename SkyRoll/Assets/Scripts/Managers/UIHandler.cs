@@ -52,14 +52,16 @@ public class UIHandler : MonoBehaviour
             Instance = this;
         }
     }
-
+    void Start() 
+    {
+        demoAgain = DataHandler.Instance.GetPlayerStatus("DemoAgain");
+    }
     #region Game Start
     public void StartGame()
     {
         camPos = camera.transform.position;
         ResetActivateCompletedLevel();        
-        StartCoroutine(ActivateUI());
-        demoAgain = true;
+        StartCoroutine(ActivateUI());        
     }
     IEnumerator ActivateUI() 
     {
@@ -67,6 +69,7 @@ public class UIHandler : MonoBehaviour
         DissableScreens();
         if (GameManager.Instance.isFirstTime)
         {
+            print("X");
             InfoScreen.SetActive(true);
             DataHandler.Instance.SaveData("IsFirstTime",false);
         }
@@ -78,6 +81,7 @@ public class UIHandler : MonoBehaviour
     }
     void ActivateStartScreen()
     {
+        print("D");
         StartScreen.SetActive(true);
         gemCountText.text = "" + GameManager.Instance.playerGemCount;
         foreach (LevelData completedLevel in GameManager.Instance.levelData)
@@ -106,13 +110,15 @@ public class UIHandler : MonoBehaviour
         gameProgress.maxValue = levelLenth;
         levelNameText.text = "";
         levelNameText.text = levelName;
-
     }
     #endregion
 
     #region Game Play
     public void PlayGame()
     {
+        print("C");
+        GameManager.Instance.gameStatus = GameManager.GameStatus.STANDBY;
+        demoAgain = true;
         DissableScreens();
         StartScreen.SetActive(true);
         SoundManager.Instance.SoundStatus();
@@ -121,7 +127,7 @@ public class UIHandler : MonoBehaviour
 
     #region Game Over
     public void GameOverUI() 
-    {
+    {       
         DissableScreens();
         GameOverScreen.SetActive(true);
         secondChance = true;
@@ -132,6 +138,7 @@ public class UIHandler : MonoBehaviour
         ResetCircleProgressBar();
         GameManager.Instance.ReviveGame();
         DissableScreens();
+        print("1");
         ActivateStartScreen();
     }
     public void GameOver()
@@ -139,6 +146,7 @@ public class UIHandler : MonoBehaviour
         GameManager.Instance.gameStatus = GameManager.GameStatus.GAMEOVER;
         DissableScreens();
         ResetCircleProgressBar();
+        print("2");
         ActivateStartScreen();
         GameManager.Instance.LoadLevel();
     }
@@ -174,6 +182,7 @@ public class UIHandler : MonoBehaviour
     void GemClaimed()
     {
         DissableScreens();
+        print("3");
         ActivateStartScreen();
         Confetti.SetActive(false);
         AnimationManager.Instance.ResetCamAnimation();
@@ -207,7 +216,6 @@ public class UIHandler : MonoBehaviour
             ResetActivateCompletedLevel();
             GameManager.Instance.ResetGame();
         }  
-
     }
     #endregion
 

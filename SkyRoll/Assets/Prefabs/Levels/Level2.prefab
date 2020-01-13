@@ -2756,7 +2756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 449356368, guid: e6c4e17f2fd3f42488c7024de9bc1930, type: 3}
       propertyPath: canRotate
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6c4e17f2fd3f42488c7024de9bc1930, type: 3}
